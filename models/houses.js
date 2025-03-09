@@ -9,7 +9,6 @@ House.init(
     id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
     houseName: { type: DataTypes.STRING, allowNull: false },
     founder: { type: DataTypes.STRING, allowNull: false },
-    characterID: {},
   },
   {
     sequelize: sequelizeInstance,

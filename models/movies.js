@@ -11,8 +11,6 @@ Movie.init(
     description: { type: DataTypes.STRING, allowNull: false },
     poster: { type: DataTypes.STRING, allowNull: false },
     series: { type: DataTypes.STRING, allowNull: false },
-    bookID: {},
-    characterID: {},
   },
   {
     sequelize: sequelizeInstance,

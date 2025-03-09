@@ -10,8 +10,6 @@ Book.init(
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.STRING, allowNull: false },
     cover: { type: DataTypes.STRING, allowNull: false },
-    movieID: {},
-    characterID: {},
   },
   {
     sequelize: sequelizeInstance,

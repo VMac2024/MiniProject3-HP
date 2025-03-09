@@ -15,11 +15,12 @@ init();
 
 Character.belongsTo(House);
 Character.hasMany(Book);
-Character.hasMany(House);
+Character.hasMany(Movie);
 House.hasMany(Character);
 Book.hasMany(Character);
 Movie.hasMany(Character);
 Movie.belongsTo(Book);
+Book.belongsTO(Movie);
 
 module.exports = {
   Book,
