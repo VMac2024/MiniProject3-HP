@@ -2,7 +2,7 @@
 const Models = require("../models");
 
 const getCharacters = (res) => {
-  Models.Character.findAll({})
+  Models.HPCharacter.findAll({})
     .then((data) => {
       res.send({ result: 200, data: data });
     })
@@ -13,7 +13,7 @@ const getCharacters = (res) => {
 };
 
 const createCharacter = (data, res) => {
-  Models.Character.create(data)
+  Models.HPCharacter.create(data)
     .then((data) => {
       res.send({ result: 200, data: data });
     })
@@ -24,7 +24,7 @@ const createCharacter = (data, res) => {
 };
 
 const updateCharacter = (req, res) => {
-  Models.Character.update(req.body, { where: { id: req.params.id }, returning: true })
+  Models.HPCharacter.update(req.body, { where: { id: req.params.id }, returning: true })
     .then((data) => {
       res.send({ result: 200, data: data });
     })
@@ -35,7 +35,7 @@ const updateCharacter = (req, res) => {
 };
 
 const deleteCharacter = (req, res) => {
-  Models.Character.destroy(req.body, { where: { id: req.params.id } })
+  Models.HPCharacter.destroy(req.body, { where: { id: req.params.id } })
     .then((data) => {
       res.send({ result: 200, data: data });
     })
