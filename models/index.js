@@ -20,7 +20,7 @@ House.hasMany(Character);
 Book.hasMany(Character);
 Movie.hasMany(Character);
 Movie.belongsTo(Book);
-Book.belongsTO(Movie);
+Book.hasOne(Movie);
 
 module.exports = {
   Book,
