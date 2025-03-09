@@ -12,7 +12,7 @@ House.init(
   },
   {
     sequelize: sequelizeInstance,
-    modelName: "houses",
+    modelName: "house",
     timestamps: true,
     freezeTableName: true,
   }

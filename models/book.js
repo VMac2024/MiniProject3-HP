@@ -2,22 +2,21 @@ const { DataTypes, Model } = require("sequelize");
 let dbConnect = require("../dbConnect");
 const sequelizeInstance = dbConnect.Sequelize;
 
-class Movie extends Model {}
+class Book extends Model {}
 
-Movie.init(
+Book.init(
   {
     id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.STRING, allowNull: false },
-    poster: { type: DataTypes.STRING, allowNull: false },
-    series: { type: DataTypes.STRING, allowNull: false },
+    cover: { type: DataTypes.STRING, allowNull: false },
   },
   {
     sequelize: sequelizeInstance,
-    modelName: "movies",
+    modelName: "book",
     timestamps: true,
     freezeTableName: true,
   }
 );
 
-module.exports = Movie;
+module.exports = Book;

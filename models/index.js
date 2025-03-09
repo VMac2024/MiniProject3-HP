@@ -1,8 +1,8 @@
 "use strict";
-const Book = require("./books");
-const Character = require("./characters");
-const House = require("./houses");
-const Movie = require("./movies");
+const Book = require("./book");
+const Character = require("./character");
+const House = require("./house");
+const Movie = require("./movie");
 
 async function init() {
   await Book.sync();

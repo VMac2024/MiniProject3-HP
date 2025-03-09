@@ -15,7 +15,7 @@ Character.init(
   },
   {
     sequlize: sequelizeInstance,
-    modelName: "characters",
+    modelName: "character",
     timestamps: true,
     freezeTableName: true,
   }
