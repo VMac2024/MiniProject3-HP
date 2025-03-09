@@ -1,14 +1,14 @@
 "use strict";
-const Books = require("./books");
-const Characters = require("./characters");
-const Houses = require("./houses");
-const Movies = require("./movies");
+const Book = require("./books");
+const Character = require("./characters");
+const House = require("./houses");
+const Movie = require("./movies");
 
 async function init() {
-  await Books.sync();
-  await Characters.sync();
-  await Houses.sync();
-  await Movies.sync();
+  await Book.sync();
+  await Character.sync();
+  await House.sync();
+  await Movie.sync();
 }
 
 init();
@@ -22,8 +22,8 @@ init();
 //Movie.belongsTo(Book)
 
 module.exports = {
-  Books,
-  Characters,
-  Houses,
-  Movies,
+  Book,
+  Character,
+  House,
+  Movie,
 };
