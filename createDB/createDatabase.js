@@ -7,7 +7,6 @@ async function createDatabase() {
     const count = await Models.Book.count(); //check how many items in database.Make sure this only runs if there is no data yet in the system.
     console.log(`total books: ${count}`);
     if (count === 0) {
-      //CHECK CODE - COUNT ON ITS OWN OR COUNT.COUNT?
       await populateDatabase();
       console.log("Fetch completed. Database loaded.");
     } else {
@@ -24,10 +23,18 @@ async function populateDatabase() {
     await Models.Book.bulkCreate(books, { ignoreDuplicates: true });
 
     const characters = await fetchCharacters(); //fetches characters, stores in variable.
-    await Models.HPCharacter.bulkCreate(characters, { ignoreDuplicates: true });
+    console.log("First Character: ", characters[0]);
+    console.log(`fetched ${characters.length} characters`);
+    await Models.HPCharacter.bulkCreate(characters, { ignoreDuplicates: true })
+      .then(() => console.log("characters inserted"))
+      .catch((e) => console.log("error inserting characters: ", e));
 
     const houses = await fetchHouses(); //fetches houses, stores in variable.
-    await Models.House.bulkCreate(houses, { ignoreDuplicates: true });
+    console.log("First House: ", houses);
+
+    await Models.House.bulkCreate(houses, { ignoreDuplicates: true })
+      .then(() => console.log("houses inserted"))
+      .catch((e) => console.log("error inserting houses: ", e));
 
     const movies = await fetchMovies(); //fetches movies, stores in variable.
     await Models.Movie.bulkCreate(movies, { ignoreDuplicates: true });
@@ -45,6 +52,10 @@ async function populateDatabase() {
 async function fetchBooks() {
   try {
     const response = await axios.get(`https://api.potterdb.com/v1/books`);
+    console.log(response);
+    if (!response.data || !response.data.data) {
+      throw new Error("Invalid response to fetchBooks");
+    }
     return response.data.data.map((book) => ({
       title: book.attributes.title,
       description: book.attributes.summary,
@@ -58,22 +69,34 @@ async function fetchBooks() {
 
 async function fetchCharacters() {
   try {
-    const response = await axios.get(`https://hp-api.onrender.com/api/characters`);
-    return response.data.data.map((character) => ({
-      name: character.name,
-      student: character.hogwartsStudent,
-      photo: character.image,
-      patronous: character.patronus,
-    }));
+    const response = await axios.get(`https://api.potterdb.com/v1/characters`);
+    if (!response.data || !response.data.data) {
+      throw new Error("Invalid response from fetchCharacters");
+    }
+    let characters = response.data.data
+      .filter((char) => character.attributes.name && character.attributes.name.trim() !== "")
+      .map((character) => ({
+        name: character.attributes.name,
+        photo: character.attributes.image,
+        patronus: character.attributes.patronus,
+      }))
+      .slice(0, 1000);
+
+    return characters;
   } catch (e) {
     console.error(e);
     return [];
   }
 }
+// https://hp-api.onrender.com/api/characters - API data can be fetched, but is not showing in the table for some reason.
 
 async function fetchHouses() {
   try {
     const response = await axios.get(`https://wizard-world-api.herokuapp.com/Houses`);
+    console.log(response);
+    if (!response.data || !response.data.data) {
+      throw new Error("Invalid response to fetchHouses");
+    }
     return response.data.data.map((house) => ({
       houseName: house.name,
       founder: house.founder,
@@ -91,6 +114,7 @@ async function fetchHouses() {
 async function fetchMovies() {
   try {
     const response = await axios.get(`https://api.potterdb.com/v1/movies`);
+    console.log(response);
     if (!response.data || !response.data.data) {
       throw new Error("Invalid response to fetchMovies");
     }
