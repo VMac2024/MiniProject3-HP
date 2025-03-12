@@ -4,6 +4,8 @@ require("dotenv").config();
 
 let dbConnect = require("./dbConnect");
 
+const createDatabase = require("./createDB/createDatabase");
+
 // parse requests of content-type - application / json;
 app.use(express.json());
 
@@ -27,4 +29,5 @@ app.use("/api/movie", movieRoutes);
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
+  setTimeout(createDatabase, 500);
 });
