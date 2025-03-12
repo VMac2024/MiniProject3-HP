@@ -10,7 +10,7 @@ Movie.init(
     title: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.STRING, allowNull: false },
     poster: { type: DataTypes.STRING, allowNull: false },
-    series: { type: DataTypes.STRING, allowNull: false },
+    trailer: { type: DataTypes.STRING, allowNull: false },
   },
   {
     sequelize: sequelizeInstance,
