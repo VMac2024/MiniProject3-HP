@@ -17,9 +17,11 @@ const Movie = require("./movie");
 init(); - PER DISCUSSION WITH JO, REMOVE THIS PART. */
 
 HPCharacter.belongsTo(House);
-HPCharacter.belongsToMany(Movie, { through: "appearances" });
 House.hasMany(HPCharacter);
-Movie.hasMany(HPCharacter, { through: "appearances" });
+
+HPCharacter.belongsToMany(Movie, { through: "appearances" });
+Movie.belongsToMany(HPCharacter, { through: "appearances" });
+
 Movie.belongsTo(Book);
 Book.hasMany(Movie); //have noted this as "hasMany" due to the last HP Book being split into two movies.
 

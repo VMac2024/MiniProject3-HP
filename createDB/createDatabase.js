@@ -1,11 +1,12 @@
 const axios = require("axios");
 const Models = require("../models");
+const movieMapping = require("../utilities/characterMovieLinks");
 
 async function createDatabase() {
   try {
     const count = await Models.Book.findAndCountAll(); //check how many items in database.Make sure this only runs if there is no data yet in the system.
-    console.log(`total books: ${count}`);
-    if (count.count == 0) {
+    console.log(`total books: ${count.count}`);
+    if (count.count === 0) {
       //CHECK CODE - COUNT ON ITS OWN OR COUNT.COUNT?
       await populateDatabase();
       console.log("Fetch completed. Database loaded.");
@@ -19,10 +20,17 @@ async function createDatabase() {
 
 async function populateDatabase() {
   try {
-    const books = await fetchBooks();
-    const characters = await fetchCharacters();
-    const houses = await fetchhouses();
-    const movies = await fetchMovies();
+    const books = await fetchBooks(); //fetches books, stores in variable.
+    await Models.Book.bulkCreate(books, { ignoreDuplicates: true });
+
+    const characters = await fetchCharacters(); //fetches characters, stores in variable.
+    await Models.HPCharacter.bulkCreate(Models.characters, { ignoreDuplicates: true });
+
+    const houses = await fetchHouses(); //fetches houses, stores in variable.
+    await Models.House.bulkCreate(houses, { ignoreDuplicates: true });
+
+    const movies = await fetchMovies(); //fetches movies, stores in variable.
+    await Models.Movie.bulkCreate(movies, { ignoreDuplicates: true });
 
     console.log(`database populated successfully`);
   } catch (e) {
@@ -61,7 +69,7 @@ async function fetchCharacters() {
   }
 }
 
-async function fetchhouses() {
+async function fetchHouses() {
   try {
     const response = await axios.get(`https://wizard-world-api.herokuapp.com/Houses`);
     return response.data.map((house) => ({
@@ -82,10 +90,10 @@ async function fetchMovies() {
   try {
     const response = await axios.get(`https://api.potterdb.com/v1/movies`);
     return response.data.map((movie) => ({
-      title: movie.title,
-      description: movie.summary,
-      poster: movie,
-      trailer: movie.url,
+      title: movie.attributes.title,
+      description: movie.attributes.summary,
+      poster: movie.attributes.poster,
+      trailer: movie.attributes.trailer,
     }));
   } catch (e) {
     console.error(e);
