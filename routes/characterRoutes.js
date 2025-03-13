@@ -14,7 +14,7 @@ router.put("/:id", (req, res) => {
   Controllers.characterController.updateCharacter(req, res);
 });
 
-router.delete("/:id:", (req, res) => {
+router.delete("/:id", (req, res) => {
   Controllers.characterController.deleteCharacter(req, res);
 });
 

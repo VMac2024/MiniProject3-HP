@@ -35,7 +35,7 @@ const updateMovie = (req, res) => {
 };
 
 const deleteMovie = (req, res) => {
-  Models.Movie.destroy(req.body, { where: { id: req.params.id } })
+  Models.Movie.destroy({ where: { id: req.params.id } })
     .then((data) => {
       res.send({ result: 200, data: data });
     })

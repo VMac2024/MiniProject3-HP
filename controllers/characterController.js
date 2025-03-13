@@ -35,7 +35,7 @@ const updateCharacter = (req, res) => {
 };
 
 const deleteCharacter = (req, res) => {
-  Models.HPCharacter.destroy(req.body, { where: { id: req.params.id } })
+  Models.HPCharacter.destroy({ where: { id: req.params.id } })
     .then((data) => {
       res.send({ result: 200, data: data });
     })

@@ -14,7 +14,7 @@ router.put("/:id", (req, res) => {
   Controllers.movieController.updateMovie(req, res);
 });
 
-router.delete("/id:", (req, res) => {
+router.delete("/:id", (req, res) => {
   Controllers.movieController.deleteMovie(req, res);
 });
 

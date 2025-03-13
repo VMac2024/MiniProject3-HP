@@ -35,7 +35,7 @@ const updateBook = (req, res) => {
 };
 
 const deleteBook = (req, res) => {
-  Models.Book.destroy(req.body, { where: { id: req.params.id } })
+  Models.Book.destroy({ where: { id: req.params.id } })
     .then((data) => {
       res.send({ result: 200, data: data });
     })

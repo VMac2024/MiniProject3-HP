@@ -14,7 +14,7 @@ router.put("/:id", (req, res) => {
   Controllers.bookController.updateBook(req, res);
 });
 
-router.delete("/id:", (req, res) => {
+router.delete("/:id", (req, res) => {
   Controllers.bookController.deleteBook(req, res);
 });
 

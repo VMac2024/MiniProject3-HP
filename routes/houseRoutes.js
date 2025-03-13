@@ -14,7 +14,7 @@ router.put("/:id", (req, res) => {
   Controllers.houseController.updateHouse(req, res);
 });
 
-router.delete("/id:", (req, res) => {
+router.delete("/:id", (req, res) => {
   Controllers.houseController.deleteHouse(req, res);
 });
 

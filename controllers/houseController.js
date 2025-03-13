@@ -35,7 +35,7 @@ const updateHouse = (req, res) => {
 };
 
 const deleteHouse = (req, res) => {
-  Models.House.destroy(req.body, { where: { id: req.params.id } })
+  Models.House.destroy({ where: { id: req.params.id } })
     .then((data) => {
       res.send({ result: 200, data: data });
     })
