@@ -69,22 +69,43 @@ async function fetchBooks() {
 
 async function fetchCharacters() {
   try {
-    const response = await axios.get(`https://api.potterdb.com/v1/characters`);
-    if (!response.data || !response.data.data) {
-      throw new Error("Invalid response from fetchCharacters");
+    let allCharacters = [];
+    let page = 1;
+    let totalPages = 5; // Fetch at least 5 pages
+
+    while (page <= totalPages) {
+      const response = await axios.get(
+        `https://api.potterdb.com/v1/characters?filter[house_eq]=Gryffindor&filter[name_start_any]=H,r,l,s,m`,
+        {
+          params: {
+            "page[number]": page, // Fetch next page
+            "page[size]": 100, // Max allowed per page
+          },
+        }
+      );
+
+      if (!response.data || !response.data.data || response.data.data.length === 0) {
+        break; // Stop fetching if no more data
+      }
+
+      allCharacters.push(...response.data.data);
+      page++;
     }
-    let characters = response.data.data
-      .filter((char) => character.attributes.name && character.attributes.name.trim() !== "")
+
+    // Process the fetched characters
+    let characters = allCharacters
       .map((character) => ({
         name: character.attributes.name,
-        photo: character.attributes.image,
-        patronus: character.attributes.patronus,
+        photo: character.attributes.image || null,
+        patronus: character.attributes.patronus || "unknown",
       }))
-      .slice(0, 1000);
+      .filter((char) => !char.name.match(/^[0-9A]/)); // Remove names starting with numbers or "A"
+
+    console.log("Filtered Characters:", characters.slice(0, 20)); // Debugging (first 20 results)
 
     return characters;
   } catch (e) {
-    console.error(e);
+    console.error("Error fetching characters:", e);
     return [];
   }
 }
@@ -132,32 +153,64 @@ async function fetchMovies() {
 
 async function linkChartoMovies() {
   try {
-    for (const entry of movieMapping) {
-      const character = await Models.HPCharacter.findOne({ where: { name: entry.character } });
-      if (!character) {
-        console.warn(`Character not found: ${entry.character}`);
-        continue;
-      }
+    const characters = await Models.HPCharacter.findAll();
+    const movies = await Models.Movie.findAll();
 
-      const movieInstances = [];
+    const movieMap = new Map(movies.map((movie) => [movie.title, movie]));
 
-      for (const movieTitle of entry.movies) {
-        const movie = await Models.Movie.findOne({ where: { title: movieTitle } });
+    let linkedCount = 0;
 
-        if (!movie) {
-          console.warn(`Movie not found: ${movieTitle}`);
-          continue;
+    for (const character of characters) {
+      if (movieMapping.hasOwnProperty(character.name)) {
+        const movieInstances = movieMapping[character.name].map((title) => movieMap.get(title)).filter(Boolean); // Remove null movies
+
+        if (movieInstances.length > 0) {
+          await character.setMovies(movieInstances);
+          linkedCount++;
+        } else {
+          console.warn(`Skipping ${character.name} - No valid movies found.`);
         }
-        movieInstances.push(movie);
-      }
-      if (movieInstances.length > 0) {
-        await character.setMovies(movieInstances);
-        console.log("Character-Movie linked");
+      } else {
+        console.warn(`Skipping ${character.name} - Not in movieMapping.`);
       }
     }
+
+    console.log(`Linked ${linkedCount} characters to movies successfully.`);
   } catch (e) {
-    console.error("Error - could not link characters & movies");
+    console.error("Error - could not link characters & movies:", e);
   }
 }
+
+async function linkBooksMovies() {
+  try {
+    const books = await fetchBooks();
+    const movies = await fetchMovies();
+
+    for (const book of books) {
+      const bookRecord = await Models.Book.findOne({
+        where: { title: book.title },
+      });
+
+      if (!bookRecord) {
+        console.warn(`book not in database: ${book.title}`);
+        continue; //skip over book if not already in database.
+      }
+      for (const movie of movies) {
+        if (book.title === "Harry Potter and the Deathly Hallows" && (movie.title.includes("Part 1") || movie.title.includes("Part 2"))) {
+          await Models.Movie.update({ bookId: bookRecord.id }, { where: { title: movie.title } });
+        } else if (movie.title.includes(book.title)) {
+          await Models.Movie.update({ BookId: bookRecord.id }, { where: { title: movie.title } });
+        }
+      }
+    }
+    console.log("Books & Movies Linked");
+  } catch (e) {
+    console.error("Error - could not link book to movie", e);
+  }
+}
+async function booklinks() {
+  await linkBooksMovies();
+}
+booklinks();
 
 module.exports = createDatabase;

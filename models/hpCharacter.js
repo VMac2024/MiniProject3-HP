@@ -7,13 +7,13 @@ class HPCharacter extends Model {}
 HPCharacter.init(
   {
     id: { type: DataTypes.INTEGER, allowNull: false, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING, allowNull: true },
+    name: { type: DataTypes.STRING, allowNull: false },
     photo: { type: DataTypes.STRING, allowNull: true },
     patronus: { type: DataTypes.STRING, allowNull: true },
   },
   {
     sequelize: sequelizeInstance,
-    modelName: "hpCharacter",
+    modelName: "Characters",
     timestamps: true,
     freezeTableName: true,
   }
